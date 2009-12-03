@@ -214,7 +214,7 @@ isSymlink(const Path& p)
 {
     bool rval = false;
     WIN32_FIND_DATAW findData;
-    HANDLE h = FindFirstFile(p.external_file_string().c_str(), &findData);
+    HANDLE h = FindFirstFileW(p.external_file_string().c_str(), &findData);
     if (h) {
         if ((findData.dwFileAttributes & FILE_ATTRIBUTE_REPARSE_POINT)
             && (findData.dwReserved0 == IO_REPARSE_TAG_SYMLINK)) {
