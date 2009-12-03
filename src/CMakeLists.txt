@@ -36,6 +36,8 @@
 
 cmake_minimum_required(VERSION 2.6)
 
+INCLUDE(BuildConfigs.cmake)
+
 IF (NOT BUILD_DIR)
    MESSAGE(FATAL_ERROR
            "BUILD_DIR not defined, use -DBUILD_DIR:STRING=a_dir_name")
