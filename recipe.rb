@@ -32,7 +32,7 @@
   :build => {
     :Windows => lambda { |c|
       buildStr = c[:build_type].to_s.capitalize
-      system("devenv bp-file.sln /Build #{buildStr}")
+      system("devenv bpfile.sln /Build #{buildStr}")
     },
     [ :MacOSX, :Linux ] => "make" 
   },
