@@ -36,24 +36,18 @@
 
 cmake_minimum_required(VERSION 2.6)
 
-INCLUDE(../build_support/BuildConfigs.cmake)
-
-PROJECT(bp-file)
-
-# default to a debug build.  This gets us symbols by default under
-# the cmake makefile generator
-#
-IF (NOT CMAKE_BUILD_TYPE)
-  SET(CMAKE_BUILD_TYPE "Debug")
-ENDIF ()
+IF (NOT BUILD_DIR)
+   MESSAGE(FATAL_ERROR
+           "BUILD_DIR not defined, use -DBUILD_DIR:STRING=a_dir_name")
+ENDIF() 
 
 INCLUDE_DIRECTORIES(
-  "${CMAKE_CURRENT_SOURCE_DIR}/../external/${CMAKE_SYSTEM_NAME}/include"
+  "${BUILD_DIR}/include"
 )
  
 LINK_DIRECTORIES(
-  "${CMAKE_CURRENT_SOURCE_DIR}/../external/${CMAKE_SYSTEM_NAME}/lib"
-  "${CMAKE_CURRENT_SOURCE_DIR}/../external/${CMAKE_SYSTEM_NAME}/lib/${CMAKE_BUILD_TYPE}"
+  "${BUILD_DIR}/lib"
+  "${BUILD_DIR}/lib/${CMAKE_BUILD_TYPE}"
 )
  
 IF (WIN32)
@@ -63,18 +57,6 @@ ELSE ()
 ENDIF ()
 SET(SRCS bpfile.cpp ${OS_SRCS})
 SET(HDRS api/bpfile.h)
-
-# Alas, trying to test CMAKE_CONFIGURATION_TYPES doesn't work,
-# it returns "Debug;Release" even for a single config generator
-#
-IF (CMAKE_CFG_INTDIR STREQUAL "." OR CMAKE_CFG_INTDIR STREQUAL "/")
-   # using a single configuration generator
-   SET(LINK_SUBDIR "${CMAKE_BUILD_TYPE}")
-ELSE ()
-   # using a multiple configuration generator
-   # vs and xcode append a build type
-   SET(LINK_SUBDIR "")
-ENDIF ()
 
 # boost libs
 #
