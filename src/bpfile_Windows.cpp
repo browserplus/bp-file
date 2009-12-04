@@ -299,17 +299,28 @@ resolveLink(const Path& path,
 {
     target.clear();
     if (isSymlink(path)) {
-        // If target exists, we just resolve to "path" since it 
-        // is a valid name.  There's GetFinalPathNameByHandle(),
-        // but it isn't present on XP
         HANDLE h = CreateFileW(path.external_file_string().c_str(),
                                0, FILE_SHARE_DELETE|FILE_SHARE_READ|FILE_SHARE_WRITE,
                                NULL, OPEN_EXISTING, 
                                FILE_FLAG_BACKUP_SEMANTICS, NULL);
-        if (h != INVALID_HANDLE_VALUE) {
-            target = path;
-            CloseHandle(h);
+        if (h == INVALID_HANDLE_VALUE) {
+            return false;
         }
+        HMODULE hm = LoadLibrary(_TEXT("kernel32.dll"));
+        if (hm != NULL) {
+            typedef DWORD (WINAPI *PGFPNBY)(HANDLE, LPTSTR, DWORD, DWORD);
+            PGFPNBY fp = (PGFPNBY) GetProcAddress(hm, "GetFinalPathNameByHandleW");
+            if (fp) {
+                wchar_t buf[32768];
+                ZeroMemory(buf, sizeof(buf));
+                DWORD ret = (*fp)(h, buf, sizeof(buf), FILE_NAME_NORMALIZED);
+                if (ret != 0) {
+                    target = buf;
+                }
+            }
+            FreeLibrary(hm);
+        }
+        CloseHandle(h);
     } else {
         // now try shortcuts
         target = readShortcut(path);
@@ -437,7 +448,7 @@ bool
 setFileProperties(const Path& p,
                   const FileInfo& fi)
 {
-	if (p.empty()) return false;
+    if (p.empty()) return false;
 
     tString nativePath = p.external_file_string();
 
