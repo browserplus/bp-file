@@ -315,7 +315,8 @@ resolveLink(const Path& path,
                 ZeroMemory(buf, sizeof(buf));
                 DWORD ret = (*fp)(h, buf, sizeof(buf), FILE_NAME_NORMALIZED);
                 if (ret != 0) {
-                    target = buf;
+                    // returned pathname uses \\?\ syntax, strip that
+                    target = &buf[4];
                 }
             }
             FreeLibrary(hm);
