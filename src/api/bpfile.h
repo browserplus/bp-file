@@ -182,7 +182,12 @@ namespace bp {
         /** Non-recursive visit of node in a path.
          *  \param p [IN] - path to visit
          *  \param v [IN] - visitor to apply to each node
-         *  \param followLinks [IN] - should links be followed?
+         *  \param followLinks [IN] - should links be followed?  If false,
+         *                            the link itself will be visited.
+         *                            If true and a link is valid, the
+         *                            link target will be visited.
+         *                            If true and a link is broken,
+         *                            the link itself will be visited.
          *  \returns - true if all nodes visited, false
          *             if "v" stopped the visit
          */
@@ -194,7 +199,12 @@ namespace bp {
          *  is performed and cycles are not revisited.
          *  \param p [IN] - path to visit
          *  \param v [IN] - visitor to apply to each node
-         *  \param followLinks [IN] - should links be followed?
+         *  \param followLinks [IN] - should links be followed?  If false,
+         *                            the link itself will be visited.
+         *                            If true and a link is valid, the
+         *                            link target will be visited.
+         *                            If true and a link is broken,
+         *                            the link itself will be visited.
          *  \returns - true if all nodes visited, false
          *             if "v" stopped the visit
          */
