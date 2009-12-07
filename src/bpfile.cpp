@@ -932,10 +932,9 @@ doVisit(const bp::file::Path& p,          // node to visit
         if (recursive) {
             // remember ourselves for cycle detection
             pathStack.push_back(DirEntry::fromPath(target));
-            relativeDir /= p.filename();
 
             // visit all children
-            int lastLevel = 0;
+            int lastLevel = -1;
             tRecursiveDirIter end;
             for (tRecursiveDirIter iter(target); iter != end; ++iter) {
                 // resolve link if chasing
