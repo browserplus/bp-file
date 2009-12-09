@@ -18,6 +18,10 @@
 
 {
   :configure => lambda { |c|
+    boostIncDir = File.join(c[:output_inc_dir], "..", "boost")
+    if (!File.directory?(boostIncDir)) 
+      raise "boost filesystem must be build before bp-file"
+    end
     btstr = c[:build_type].to_s.capitalize
     cmakeGen = nil
     # on windows we must specify a generator, we'll get that from the
