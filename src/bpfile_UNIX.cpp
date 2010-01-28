@@ -35,6 +35,7 @@
 #include <errno.h>
 #include <sys/time.h>
 #include <iostream>
+#include <string.h>
 
 #ifdef MACOSX
 #include <CoreFoundation/CoreFoundation.h>
@@ -229,7 +230,7 @@ resolveLink(const Path& path,
     Path rstr = readLink(path);
     if (!rstr.empty()) {
         rstr = canonicalPath(rstr, path.parent_path());
-        rval = bfs::exists(rstr);
+        rval = exists(rstr);
     }
     if (rval) {
         target = rstr;
@@ -243,7 +244,7 @@ resolveLink(const Path& path,
 bool
 touch(const Path& path)
 {
-    if (bfs::exists(path)) {
+    if (exists(path)) {
         return (utimes(path.external_file_string().c_str(), NULL) == 0);
     }
 
