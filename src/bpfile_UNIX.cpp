@@ -65,10 +65,11 @@ static Path
 readLink(const Path& path)
 {
     Path rval;
-    char buf[PATH_MAX];
+    char buf[PATH_MAX+1];
     int r = ::readlink(path.external_file_string().c_str(), buf, sizeof(buf));
     if (r > 0) {
-        buf[r] = '\0';
+        int index = r < PATH_MAX ? r : PATH_MAX;
+        buf[index] = '\0';
         rval = buf;
     }
 #ifdef MACOSX
@@ -150,7 +151,7 @@ canonicalPath(const Path& path,
             }
         }
             
-        char buf[PATH_MAX];
+        char buf[PATH_MAX+1];
         if (::realpath(path.external_file_string().c_str(), buf) == NULL) {
             throw string("realpath failed on " + string(buf));
         }
@@ -178,7 +179,14 @@ canonicalProgramPath(const Path& path,
 bool 
 isSymlink(const Path& path)
 {
-    return bfs::is_symlink(path);
+    try {
+        return bfs::is_symlink(path);
+    } catch(const tFileSystemError& e) {
+        BPLOG_DEBUG_STRM("bfs::is_symlink(" << path << ") failed.");
+        BPLOG_INFO_STRM("bfs::is_symlink failed: " << e.what() <<
+                        ", returning false.");
+        return false;
+    }
 }
 
 
@@ -191,7 +199,7 @@ isLink(const Path& path)
 
 #ifdef MACOSX
     // aliases appear as regular files
-    if (bfs::is_regular(path)) {
+    if (isRegularFile(path)) {
         FSRef ref;
         if (FSPathMakeRef((const UInt8*)path.external_file_string().c_str(),
                           &ref, NULL) == noErr) {
@@ -248,12 +256,12 @@ touch(const Path& path)
         return (utimes(path.external_file_string().c_str(), NULL) == 0);
     }
 
-    if (!bfs::is_directory(path.parent_path())) {
+    if (!isDirectory(path.parent_path())) {
         return false;
     }
 
     int fd = open(path.external_file_string().c_str(),
-                  O_EXCL | O_CREAT | O_WRONLY);
+                  O_EXCL | O_CREAT | O_WRONLY, 0644);
     if (fd < 0) return false;
     close(fd);
 

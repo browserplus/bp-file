@@ -327,6 +327,14 @@ namespace bp {
          */
         void delayDelete();
 
+        /** Returns file size (0 for directories).
+         *  Uses boost::filesystem::file_size(), returning
+         *  0 if that method throws an exception
+         *  \param      path [IN] - sourc path
+         *  \returns    file size
+         */
+        size_t size(const Path& path);
+
         /** Whether the item specified by the path exists.
          *  Uses boost::filesystem::exists().
          *  Returns false if that method throws an exception. 
@@ -334,6 +342,30 @@ namespace bp {
          *  \returns	true if path item exists
          */
         bool exists(const Path& path);
+
+        /** Whether the item specified by the path is a directory.
+         *  Uses boost::filesystem::is_directory().
+         *  Returns false if that method throws an exception. 
+         *  \param		path [IN] - source path
+         *  \returns	true if path item is a directory
+         */
+        bool isDirectory(const Path& path);
+
+        /** Whether the item specified by the path is a regular file.
+         *  Uses boost::filesystem::is_regular_file().
+         *  Returns false if that method throws an exception. 
+         *  \param      path [IN] - source path
+         *  \returns    true if path item is a regular file
+         */
+        bool isRegularFile(const Path& path);
+
+        /** Whether the item specified by the path is an "other" type
+         *  of file.  Uses boost::filesystem::is_other().
+         *  Returns false if that method throws an exception.
+         *  \param      path [IN] - source path
+         *  \returns    true if path item is an "other" file
+         */
+        bool isOther(const Path& path);
 
         /** Does a path refer to a Unix or NTFS symlink?
          *  \param		path [IN] - source path
