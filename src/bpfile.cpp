@@ -1223,9 +1223,17 @@ recursiveVisit(const Path& p,
                IVisitor& v,
                bool followLinks)
 {
+    bool isDir = isDirectory(p);
+    if (!isDir) {
+        BPLOG_WARN_STRM("recursiveVisit(" << p << "), not a directory"
+                        << ", doing a visit()");
+    }
     vector<DirEntry> stack;
-    Path rp = p.filename();
-    return doVisit(p, v, stack, rp, followLinks, true);
+    Path rp;
+    if (isDir ) {
+        rp = p.filename();
+    }
+    return doVisit(p, v, stack, rp, followLinks, isDir);
 }
 
 
@@ -1419,7 +1427,7 @@ exists(const Path& path)
 }
 
 
-size_t
+boost::uintmax_t
 size(const Path& path)
 {
     try {
