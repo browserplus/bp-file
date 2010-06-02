@@ -17,6 +17,7 @@
 # Note that bp-file depends on boost
 
 {
+  :deps => [ 'boost' ],
   :configure => lambda { |c|
     boostIncDir = File.join(c[:output_inc_dir], "..", "boost")
     if (!File.directory?(boostIncDir)) 

@@ -103,7 +103,7 @@ CACHE STRING "use 10.4 frameworks" FORCE)
       ADD_DEFINITIONS(-DLINUX -D_LINUX -DXP_LINUX)
     ENDIF()
  
-    SET(CMAKE_CXX_FLAGS "-Wall ${isysrootFlag} ${minVersionFlag}"
+    SET(CMAKE_CXX_FLAGS "-Wall -fPIC ${isysrootFlag} ${minVersionFlag}"
         CACHE STRING "bp-file CXX flags" FORCE)
 
     SET(CMAKE_CXX_FLAGS_DEBUG "-DDEBUG -g")
