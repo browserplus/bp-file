@@ -13,8 +13,8 @@
  * The Original Code is BrowserPlus (tm).
  * 
  * The Initial Developer of the Original Code is Yahoo!.
- * Portions created by Yahoo! are Copyright (C) 2006-2009 Yahoo!.
- * All Rights Reserved.
+ * Portions created by Yahoo! are Copyright (c) 2010 Yahoo! Inc.
+ * All rights reserved.
  * 
  * Contributor(s): 
  * ***** END LICENSE BLOCK *****
@@ -450,8 +450,10 @@ namespace bp {
 
         bool makeReadOnly(const Path& path);
 
-        // what are a path's mimetypes?
-        std::set<std::string> mimeTypes(const Path& path);
+        // What are a path's mimetypes?  If there is
+        // an "official" mimetype (xxx/vnd.yyy), it
+        // will be first.
+        std::vector<std::string> mimeTypes(const Path& path);
 
         // is a path one of the specified mimetypes?
         bool isMimeType(const Path& path,
