@@ -131,10 +131,9 @@ getTempDirectory()
             tempDir = stringRefToUTF8(ctmpDir);
             CFRelease(ctmpDir);
             CFRelease(tmpUrl);
-        }
-        else 
-        {
-            BP_THROW_FATAL("Can't get temp dir");
+        } else {
+            boost::system::error_code ec(errno, boost::system::system_category);
+            throw tFileSystemError("Can't get temp dir", Path(), Path(), ec);
         }
     }
 
@@ -205,7 +204,7 @@ canonicalPath(const Path& path,
             
         char buf[PATH_MAX+1];
         if (::realpath(path.external_file_string().c_str(), buf) == NULL) {
-            throw string("realpath failed");
+            throw string("realpath failed on " + string(buf));
         }
         rval = buf;
     } catch(const string& s) {
