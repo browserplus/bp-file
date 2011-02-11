@@ -34,7 +34,7 @@
 # Original Author: Gordon Durand
 #####
 
-cmake_minimum_required(VERSION 2.8)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8.1)
 
 PROJECT(bpfile)
 INCLUDE(BuildConfigs.cmake)
