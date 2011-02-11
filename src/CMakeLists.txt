@@ -1,7 +1,7 @@
 #####
 # A CMake build file for bp::file stuff.
 # 
-# Copyright 2009, Yahoo!
+# Copyright 2010, Yahoo!
 # 
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are
@@ -37,7 +37,7 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8.1)
 
 PROJECT(bpfile)
-INCLUDE(BuildConfigs.cmake)
+INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/external/bp-build-templates/cmake/BuildConfigs.cmake)
 
 IF (NOT BUILD_DIR)
    MESSAGE(FATAL_ERROR

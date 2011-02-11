@@ -1,0 +1,3 @@
+[submodule "src/external/bp-build-templates"]
+	path = src/external/bp-build-templates
+	url = git://github.com/browserplus/bp-build-templates
