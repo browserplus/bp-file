@@ -31,7 +31,7 @@
     cmLine = "cmake -DCMAKE_BUILD_TYPE=\"#{btstr}\" #{c[:cmake_args]} " +
              " #{cmakeGen} " +
              " -DBUILD_DIR=\"#{c[:output_dir]}\""  +
-             " \"#{c[:src_dir]}\"/src" 
+             " \"#{c[:src_dir]}/src\"" 
     puts cmLine
     system(cmLine)
   },
