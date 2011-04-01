@@ -24,11 +24,18 @@
       raise "boost filesystem must be build before bp-file"
     end
     btstr = c[:build_type].to_s.capitalize
+    
+    osxArg = ''
+    if c[:platform] == :MacOSX && c[:toolchain] == 'gcc-4.0'
+      osxArg = '-DOSX10.4_BUILD=true'
+    end
+
     cmakeGen = nil
     # on windows we must specify a generator, we'll get that from the
     # passed in configuration
     cmakeGen = "-G \"#{c[:cmake_generator]}\"" if c[:cmake_generator]
-    cmLine = "cmake -DCMAKE_BUILD_TYPE=\"#{btstr}\" #{c[:cmake_args]} " +
+    cmLine = "cmake --no-warn-unused-cli #{osxArg}" +
+             " -DCMAKE_BUILD_TYPE=\"#{btstr}\" #{c[:cmake_args]} " +
              " #{cmakeGen} " +
              " -DBUILD_DIR=\"#{c[:output_dir]}\""  +
              " \"#{c[:src_dir]}/src\"" 
