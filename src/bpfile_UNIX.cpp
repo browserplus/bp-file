@@ -249,12 +249,6 @@ resolveLink(const bfs::path& path,
         target.clear();
     }
 
-    if (rval) {
-        target = linkVal;
-    } else {
-        target.clear();
-    }
-
     if (cfd >= 0) {
         ::fchdir(cfd);
         ::close(cfd);
