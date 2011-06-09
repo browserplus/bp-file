@@ -115,32 +115,13 @@ readShortcut(const bfs::path& path)
 
 
 bfs::path
-canonicalPath(const bfs::path& path,
-              const bfs::path& root)
+absoluteProgramPath(const bfs::path& path)
 {
-    bfs::path rval = root;
-    if (root.empty() 
-        && PathIsRelativeW((wchar_t*) nativeString(path).c_str())) {
-        wchar_t* curDir = _wgetcwd(NULL, 0);
-        if (!curDir) return path;
-        rval = curDir;
-        free(curDir);
-    } 
-    if (rval.empty()) return path;
-
-    rval /= path;
-    rval = canonical(rval);
+    bfs::path rval = absolutePath(path);
+    if (!rval.empty()) {
+        (void) rval.replace_extension(".exe");
+    }
     return rval;
-}
-
-
-bfs::path
-canonicalProgramPath(const bfs::path& path,
-                     const bfs::path& root)
-{
-    bfs::path name = canonicalPath(path, root);
-    (void) name.replace_extension(".exe");
-    return name;
 }
 
 
@@ -280,26 +261,6 @@ resolveLink(const bfs::path& path,
         target = readShortcut(path);
     }
     return !target.empty();
-}
-
-
-bfs::path
-getTempPath(const bfs::path& tempDir,
-            const string& prefix)
-{
-    bfs::path prefixPath(prefix);
-	wchar_t outBuf[MAX_PATH];
-	UINT x = GetTempFileNameW(nativeString(tempDir).c_str(),
-                              nativeString(prefixPath).c_str(), 0, outBuf);
-    if (!x) {
-        boost::system::error_code ec(GetLastError(),
-                                     boost::system::system_category());
-        throw bfs::filesystem_error("GetTempFileNameW fails",
-                                    tempDir, prefixPath, ec);
-    }
-    bfs::path path(outBuf);
-    (void) safeRemove(path);
-	return path;
 }
 
 

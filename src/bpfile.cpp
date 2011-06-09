@@ -26,6 +26,13 @@
  *  Copyright 2009 Yahoo! Inc. All rights reserved.
  */
 
+#ifdef WIN32
+// boost::algorithm causes vs to whine
+#pragma warning(disable:4996 4512 4101)
+#define strcasecmp _stricmp
+#define strncasecmp _strnicmp
+#endif
+
 #include <set>
 #include <vector>
 #include <map>
@@ -49,13 +56,6 @@
 #define BPLOG_INFO_STRM(x)
 #define BPLOG_WARN_STRM(x)
 #define BPLOG_ERROR_STRM(x)
-#endif
-
-#ifdef WIN32
-// boost::algorithm::is_any_of causes vs to whine
-#pragma warning(disable:4996 4512 4101)
-#define strcasecmp _stricmp
-#define strncasecmp _strnicmp
 #endif
 
 #include <locale>
@@ -1511,6 +1511,22 @@ canonical(const bfs::path& p)
 
 
 bfs::path
+absolutePath(const bfs::path& path)
+{
+    bfs::path rval;
+    try {
+        rval = bfs::system_complete(path);
+    } catch(const bfs::filesystem_error& e) {
+        BPLOG_DEBUG_STRM("bfs::system_complete(" << path << ") failed.");
+        BPLOG_INFO_STRM("bfs::system_complete failed: " << e.what() <<
+                        ", returning false.");
+        rval.clear();
+    }
+    return rval;
+}
+
+
+bfs::path
 relativeTo(const bfs::path& p,
            const bfs::path& base)
 {
@@ -1732,6 +1748,16 @@ copyDir(const bfs::path& from,
 }
 
 
+bfs::path
+getTempPath(const bfs::path& tempDir,
+            const string& prefix)
+{
+    bfs::path p = tempDir / bfs::path(prefix + "%%%%-%%%%-%%%%-%%%%");
+    bfs::path rval = bfs::unique_path(p);
+    return rval;
+}
+
+
 bool 
 safeCopy(const bfs::path& src,
          const bfs::path& dst,
@@ -1831,7 +1857,8 @@ openReadableStream(ifstream& fstream,
                    int flags)
 {
     if (fstream.is_open()) {
-        BPLOG_WARN_STRM("openReadableStream, stream already open");
+        BPLOG_WARN_STRM("openReadableStream(" << nativeUtf8String(path)
+                        << "), stream already open");
         return false;
     }
 #ifdef WIN32
@@ -1840,7 +1867,8 @@ openReadableStream(ifstream& fstream,
     fstream.open(nativeString(path).c_str(), ios::in | (_Ios_Openmode) flags);
 #endif
     if (!fstream.is_open()) {
-        BPLOG_WARN_STRM("openReadableStream, stream open failed for " << path);
+        BPLOG_WARN_STRM("openReadableStream(" << nativeUtf8String(path)
+                        << "), stream open failed");
         return false;
     }
     return true;
