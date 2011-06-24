@@ -1420,7 +1420,6 @@ pathFromURL(const string& url)
                     // also be aware that Windows may also have a
                     // drive specifier here.
                     if (haveDrive) {
-//                        pathStr = *it + "/";
                         pathStr = *it;
                     } else {
                         pathStr = "//" + *it;
@@ -1542,7 +1541,7 @@ relativeTo(const bfs::path& p,
     if (ourStr.find(baseStr) != 0) {
         boost::system::error_code ec;
         throw bfs::filesystem_error("path1 not relative to path2",
-                                          p, base, ec);
+                                     p, base, ec);
     }
     string relStr = ourStr.substr(baseStr.length(), string::npos);
     return bfs::path(relStr);
@@ -1745,16 +1744,6 @@ copyDir(const bfs::path& from,
             bfs::copy_file(it->path(), target);
         }
     }
-}
-
-
-bfs::path
-getTempPath(const bfs::path& tempDir,
-            const string& prefix)
-{
-    bfs::path p = tempDir / bfs::path(prefix + "%%%%-%%%%-%%%%-%%%%");
-    bfs::path rval = bfs::unique_path(p);
-    return rval;
 }
 
 
